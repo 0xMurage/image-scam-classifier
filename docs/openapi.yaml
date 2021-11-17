@@ -1,0 +1,199 @@
+---
+  openapi: "3.0.0"
+  info: 
+    version: "1.0"
+    title: "Scam classifier"
+    description: "Classify an image as scam based on trained data"
+  servers: 
+    - 
+      url: "{scheme}://139.162.133.105/{basePath}"
+      variables: 
+        scheme: 
+          enum: 
+            - "http"
+          default: "http"
+        basePath: 
+          default: "api/v1/"
+  tags: 
+    - 
+      name: "api"
+  paths: 
+    /classify/url: 
+      post: 
+        security: []
+        tags: 
+          - "api"
+        summary: "api"
+        parameters: []
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  url: 
+                    type: "string"
+              example: 
+                url: "https://i0.wp.com/alabamanewscenter.com/wp-content/uploads/2018/11/Bitcoin-Scams.jpg"
+        responses: 
+          200: 
+            description: "OK"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    data: 
+                      type: "object"
+                      properties: 
+                        createdAt: 
+                          type: "string"
+                        predictions: 
+                          type: "array"
+                          items: 
+                            type: "object"
+                            properties: 
+                              boundingBox: 
+                                type: "string"
+                              probability: 
+                                type: "number"
+                              tagName: 
+                                type: "string"
+                            required: 
+                              - "boundingBox"
+                              - "probability"
+                              - "tagName"
+                    ref: 
+                      type: "string"
+                example: 
+                  data: 
+                    createdAt: "2021-11-17T18:34:24.476413"
+                    predictions: 
+                      - 
+                        boundingBox: null
+                        probability: 0.9949558973312378
+                        tagName: "legit"
+                      - 
+                        boundingBox: null
+                        probability: 0.005044010002166033
+                        tagName: "scam"
+                  ref: "a4d5ab8b-38e5-4bb0-ae84-6920f33755f2"
+          default: 
+            description: "Unexpected error"
+            content: 
+              application/json: 
+                example: 
+                  message: "Sorry unable to perform operation."
+    /classify/image: 
+      post: 
+        security: []
+        tags: 
+          - "api"
+        summary: "api"
+        parameters: []
+        requestBody: 
+          required: true
+          content: 
+            multipart/form-data: 
+              schema: 
+                type: "object"
+                properties: 
+                  imageData: 
+                    type: "string"
+                    format: "binary"
+                required: 
+                  - "imageData"
+                  - ""
+        responses: 
+          200: 
+            description: "OK"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    iteration: 
+                      type: "string"
+                    ref: 
+                      type: "string"
+                    results: 
+                      type: "object"
+                      properties: 
+                        createdAt: 
+                          type: "string"
+                        predictions: 
+                          type: "array"
+                          items: 
+                            type: "object"
+                            properties: 
+                              boundingBox: 
+                                type: "string"
+                              probability: 
+                                type: "number"
+                              tagName: 
+                                type: "string"
+                            required: 
+                              - "boundingBox"
+                              - "probability"
+                              - "tagName"
+                example: 
+                  iteration: "v1.0.0"
+                  ref: "88ea66fb-0478-47d1-83ca-71af8ac17173"
+                  results: 
+                    createdAt: "2021-11-17T18:44:15.575369"
+                    predictions: 
+                      - 
+                        boundingBox: null
+                        probability: 0.9997995495796204
+                        tagName: "legit"
+                      - 
+                        boundingBox: null
+                        probability: 0.00020043000404257327
+                        tagName: "scam"
+          default: 
+            description: "Unexpected error"
+            content: 
+              application/json: 
+                example: 
+                  message: "Sorry unable to perform operation."
+    /labels: 
+      get: 
+        security: []
+        tags: 
+          - "api"
+        summary: "api"
+        parameters: []
+        responses: 
+          200: 
+            description: "OK"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    app_version: 
+                      type: "string"
+                    data: 
+                      type: "array"
+                      items: 
+                        type: "object"
+                        properties: 
+                          legit: 
+                            type: "string"
+                          scam: 
+                            type: "string"
+                        required: [""]
+                example: 
+                  app_version: "v2"
+                  data: 
+                    - 
+                      legit: "legit"
+                    - 
+                      scam: "scam"
+          default: 
+            description: "Unexpected error"
+            content: 
+              application/json: 
+                example: 
+                  message: "Sorry unable to perform operation."
